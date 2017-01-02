@@ -1,6 +1,6 @@
 {
   "name": "ember-recurly",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "The default blueprint for ember-cli addons.",
   "directories": {
     "doc": "doc",
@@ -40,7 +40,10 @@
     "loader.js": "^4.0.1"
   },
   "keywords": [
-    "ember-addon"
+    "ember-addon",
+    "recurly",
+    "payments",
+    "subscriptions"
   ],
   "dependencies": {
     "ember-cli-babel": "^5.1.6"
