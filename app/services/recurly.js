@@ -4,12 +4,14 @@ import Ember from 'ember';
 export default Ember.Service.extend({
   pricing: null,
 
-  setupFields() {
+  setupFields(options) {
+    options = options || {};
     return new Ember.RSVP.Promise(function(resolve, reject) {
       if (!config.recurly.publicKey) {
         reject('RecurlyService: Missing Recurly key, please set `ENV.recurly.publicKey` in config.environment.js');
       } else {
-        recurly.configure(config.recurly.publicKey);
+        options['publicKey'] = config.recurly.publicKey;
+        recurly.configure(options);
         resolve();
       }
     });
