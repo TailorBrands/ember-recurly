@@ -10,7 +10,7 @@ export default Ember.Service.extend({
       if (!config.recurly.publicKey) {
         reject('RecurlyService: Missing Recurly key, please set `ENV.recurly.publicKey` in config.environment.js');
       } else {
-        options['publicKey'] = config.recurly.publicKey;
+        options.publicKey = config.recurly.publicKey;
         recurly.configure(options);
         resolve();
       }
