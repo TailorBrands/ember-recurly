@@ -12,7 +12,7 @@ export default Ember.Service.extend({
       } else {
         options.publicKey = config.recurly.publicKey;
         recurly.configure(options);
-        resolve();
+        resolve(recurly);
       }
     });
   },
@@ -44,5 +44,17 @@ export default Ember.Service.extend({
   getPricing() {
     this.pricing = this.pricing || recurly.Pricing();
     return this.pricing;
+  },
+
+  calculatePricing(planCode, couponCode = null, currency = 'USD') {
+    return new Ember.RSVP.Promise(function(resolve, reject) {
+      let price = pricing.plan(planCode).currency(currency);
+
+      if (couponCode) {
+        price = price.coupon(couponCode);
+      }
+
+      price.catch(function(error) { reject(error); }).done(function(result) { resolve(result); });
+    });
   }
 });
