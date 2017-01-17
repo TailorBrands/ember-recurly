@@ -47,6 +47,7 @@ export default Ember.Service.extend({
   },
 
   calculatePricing(planCode, couponCode = null, currency = 'USD') {
+    const pricing = this.getPricing();
     return new Ember.RSVP.Promise(function(resolve, reject) {
       let price = pricing.plan(planCode).currency(currency);
 
