@@ -1,14 +1,16 @@
+import { isBlank } from '@ember/utils';
+import { Promise as EmberPromise } from 'rsvp';
+import Service from '@ember/service';
 import config from '../config/environment';
-import Ember from 'ember';
-import {task, timeout} from 'ember-concurrency';
+import { task, timeout } from 'ember-concurrency';
 
-export default Ember.Service.extend({
+export default Service.extend({
   pricing: null,
   braintreePayPal: null,
 
   setupFields(options) {
     options = options || {};
-    return new Ember.RSVP.Promise(function(resolve, reject) {
+    return new EmberPromise(function(resolve, reject) {
       if (!config.recurly.publicKey) {
         reject('RecurlyService: Missing Recurly key, please set `ENV.recurly.publicKey` in config.environment.js');
       } else {
@@ -22,7 +24,7 @@ export default Ember.Service.extend({
   setupBraintreePayPal(options) {
     options = options || {};
 
-    return new Ember.RSVP.Promise((resolve, reject) => {
+    return new EmberPromise((resolve, reject) => {
       if (this.braintreePayPal) {
         return resolve(this.braintreePayPal);
       }
@@ -48,7 +50,7 @@ export default Ember.Service.extend({
   }),
 
   getToken(billingInfo) {
-    return new Ember.RSVP.Promise(function(resolve, reject) {
+    return new EmberPromise(function(resolve, reject) {
       recurly.token(billingInfo, function(err, token) {
         if (err) {
           reject(err);
@@ -60,11 +62,11 @@ export default Ember.Service.extend({
   },
 
   getBraintreePayPal(opts) {
-    if (Ember.isBlank(this.braintreePayPal) || this.braintreePayPal.readyState === 0) {
+    if (isBlank(this.braintreePayPal) || this.braintreePayPal.readyState === 0) {
       throw new Error('braintree PayPal isn\'t initialized yet')
     }
 
-    const resultingPromise = new Ember.RSVP.Promise((resolve, reject) => {
+    const resultingPromise = new EmberPromise((resolve, reject) => {
       this.braintreePayPal.on('error', function(err) {
         reject(err);
       });
@@ -82,7 +84,7 @@ export default Ember.Service.extend({
   },
 
   getPayPalToken(opts) {
-    return new Ember.RSVP.Promise(function(resolve, reject) {
+    return new EmberPromise(function(resolve, reject) {
       recurly.paypal(opts, function(err, token) {
         if (err) {
           reject(err);
@@ -100,7 +102,7 @@ export default Ember.Service.extend({
 
   calculatePricing(planCode, couponCode = null, currency = 'USD') {
     const pricing = this.getPricing();
-    return new Ember.RSVP.Promise(function(resolve, reject) {
+    return new EmberPromise(function(resolve, reject) {
       let price = pricing.plan(planCode).currency(currency);
 
       if (couponCode) {
